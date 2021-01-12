@@ -4,7 +4,16 @@
     <div id="calculator">
       <div class="showBoard">
         <div class="wrap">
-          <div class="text">{{showNum}}</div>
+          <div class="text" v-if="result!=='' ">{{result}}</div>
+          <div class="text" v-else>{{showNum}}</div>
+        </div>
+        <div class="action-container">
+          <transition name="magnify">
+            <div class="action">
+              <i v-if="opClass!== ''" :class="`${opClass}`" class="fas"></i>
+              <!-- <div class="text" v-else>{{nowOp}}</div> -->
+            </div>
+          </transition>
         </div>
       </div>
       <div class="button-container">
@@ -39,14 +48,8 @@
 
         <div class="btn double" @click="insertNum('0')">0</div>
         <div class="btn" @click="insertOp('dot')">.</div>
-        <div class="btn opBtn" @click="insertOp('equal')">
+        <div class="btn opBtn" @click="equal()">
           <i class="fas fa-equals"></i>
-        </div>
-      </div>
-      <div class="action-container">
-        <div class="action">
-          <i v-if="opClass!== ''" :class="`${opClass}`" class="fas"></i>
-          <!-- <div class="text" v-else>{{nowOp}}</div> -->
         </div>
       </div>
     </div>
@@ -86,53 +89,98 @@ export default {
   //   }
   // },
   watch: {
-    // showNum(oldVal,newVal){
-    //   if(oldVal !== ""){
-    //     this.showNum += oldVal
-    //   }else{
-    //     this.showNum = newVal
-    //   }
-    //   console.log(oldVal,'oldVal')
-    //   console.log(newVal,'newVal')
-    // }
+    result(oldVal, newVal) {
+      const vm = this
+      if (isFinite(newVal)) {
+        alert("數字不能除以零喔")
+        vm.initData()
+      }
+      console.log(oldVal, "oldVal");
+      console.log(newVal, "newVal");
+    }
+  },
+  mounted(){
+    vuecp = this
   },
   methods: {
     insertNum(num) {
       const vm = this;
       console.log(num);
       vm.clickNum = num;
-      if(vm.showNum === "0"){
+      if (vm.showNum === "0") {
         vm.showNum = vm.clickNum;
-      }else{
-        vm.showNum += vm.clickNum;
+      } else {
+        if (vm.oldNum !== "" && vm.nowOp !== "") {
+          //有按下運算子
+          if (vm.showNum === "") {
+            vm.showNum = vm.clickNum;
+          } else {
+            vm.showNum += vm.clickNum;
+          }
+        } else {
+          //只按數字
+          vm.showNum += vm.clickNum;
+        }
       }
     },
     insertOp(op) {
       const vm = this;
+      // vm.opClass = ""
+      vm.oldNum = vm.showNum;
+      vm.showNum = "";
       switch (op) {
         case "plus":
+          vm.nowOp = "plus";
           vm.opClass = "fa-plus";
           break;
         case "minus":
+          vm.nowOp = "minus";
           vm.opClass = "fa-minus";
           break;
         case "times":
+          vm.nowOp = "times";
           vm.opClass = "fa-times";
           break;
         case "divide":
+          vm.nowOp = "divide";
           vm.opClass = "fa-divide";
           break;
         case "ac":
-          vm.opClass = "";
-          vm.clickNum = ""
-          vm.showNum = "0"
-          vm.oldNum = ""
-          vm.nowOp = "AC"
           break;
-
+          vm.initData()
         default:
           break;
       }
+    },
+    equal() {
+      const vm = this;
+      if (vm.nowOp !== "" && vm.oldNum !== "") {
+        switch (vm.nowOp) {
+          case "plus":
+            vm.result = Number(vm.showNum) + Number(vm.oldNum);
+            break;
+          case "minus":
+            vm.result = Number(vm.oldNum) - Number(vm.showNum);
+            break;
+          case "times":
+            vm.result = Number(vm.oldNum) * Number(vm.showNum);
+            break;
+          case "divide":
+            vm.result = Number(vm.oldNum) / Number(vm.showNum);
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    initData() {
+      const vm = this;
+      vm.opClass = "";
+      vm.clickNum = "";
+      vm.showNum = "0";
+      vm.oldNum = "";
+      vm.nowOp = "AC";
+      vm.result = "";
     }
   }
 };
@@ -151,8 +199,8 @@ $h1: 30px;
   }
   #calculator {
     .showBoard {
+      position: relative;
       background: transparent;
-      // background-image: linear-gradient(90deg,#fff 90%, #6cacc5);
       width: 320px;
       height: 100px;
       margin: auto;
@@ -182,6 +230,9 @@ $h1: 30px;
         text-align: center;
         border-radius: 8px;
         cursor: pointer;
+        &:hover {
+          background-color: #2c5d43de;
+        }
         &.double {
           width: 160px;
         }
@@ -189,11 +240,34 @@ $h1: 30px;
     }
     .action-container {
       position: absolute;
-      right: 10%;
-      top: 10%;
-      font-size: 100px;
+      right: -90px;
+      top: 2px;
+      font-size: 60px;
       color: #f3ca6d;
+      .action {
+        animation: magnify 0.3s linear;
+      }
     }
+  }
+}
+.magnify-enter, .magnify-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  transform: translateX(0px);
+  transform: scale(1);
+}
+.magnify-enter-active,
+.magnify-leave-active {
+  transform: translateX(-10px);
+  transform: scale(1.5);
+}
+
+@keyframes magnify {
+  0% {
+    transform: translateX(-10px);
+    transform: scale(1.5);
+  }
+  100% {
+    transform: translateX(0px);
+    transform: scale(1);
   }
 }
 </style>
