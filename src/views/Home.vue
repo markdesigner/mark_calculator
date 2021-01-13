@@ -4,9 +4,9 @@
     <div id="calculator">
       <div class="showBoard">
         <div class="wrap">
-          <div class="text" v-if="result!=='' ">{{result}}</div>
-          <div class="text" v-if="result==='' && oldNum==='' && showNum !== ''">{{showNum}}</div>
-          <div class="text" v-if="result==='' && oldNum!=='' && showNum === ''">{{oldNum}}</div>
+          <div class="text" v-if="result!==''&& multipleMode === false">{{result}}</div>
+          <div class="text" v-if="(result==='' || multipleMode === true) && showNum !== ''">{{showNum}}</div>
+          <div class="text" v-if="(result==='' || multipleMode === true) && oldNum!=='' && showNum === ''">{{oldNum}}</div>
         </div>
         <div class="action-container">
           <transition name="magnify">
@@ -48,7 +48,7 @@
         </div>
 
         <div class="btn double" @click="insertNum('0')">0</div>
-        <div class="btn" @click="insertOp('dot')">.</div>
+        <div class="btn" @click="floatNum()">.</div>
         <div class="btn opBtn" @click="equal()">
           <i class="fas fa-equals"></i>
         </div>
@@ -73,67 +73,48 @@ export default {
       clickNum: "",
       oldNum: "",
       nowOp: "",
-      opClass: ""
+      opClass: "",
+      multipleMode:false,//累加模式（運算一次後沒有歸零，繼續計算，顯示部分特別處理）
     };
-  },
-  // computed: {
-  //   num() {
-  //     return
-  //     // if (this.oldNum === "") {
-  //     //   console.log('123')
-  //     //   this.oldNum = this.clickNum;
-  //     //   return this.clickNum;
-  //     // } else if (this.oldNum !== "" && this.clickNum !== "") {
-  //     //   console.log('456')
-  //     //   return (this.oldNum += this.clickNum);
-  //     // }
-  //   }
-  // },
-  watch: {
-    // result(oldVal, newVal) {
-    //   const vm = this
-    //   if (newVal !== '' && !isFinite(newVal)) {
-    //     alert("數字不能除以零喔")
-    //     setTimeout(() => {
-    //       vm.initData()
-    //     }, 100);
-    //   }
-    //   console.log(oldVal, "oldVal");
-    //   console.log(newVal, "newVal");
-    // }
   },
   mounted(){
     vuecp = this
   },
   methods: {
-    insertNum(num) {
+    insertNum(clickNum) {
       const vm = this;
-      console.log(num);
-      vm.clickNum = num;
+      // vm.clickNum = num;
       console.log('113')
       if (vm.showNum === "0" || vm.showNum === "") {
-         console.log('115',vm.clickNum)
+         console.log('115',clickNum)
 
-        vm.showNum = vm.clickNum;
+        vm.showNum = clickNum;
       } else {
+        console.log('118')
         if (vm.oldNum !== "" && vm.nowOp !== "") {
           //有按下運算子
           if (vm.showNum === "") {
-            vm.showNum = vm.clickNum;
+            vm.showNum = clickNum;
           } else {
-            vm.showNum += vm.clickNum;
+            vm.showNum += clickNum;
           }
         } else {
           //只按數字
-          vm.showNum += vm.clickNum;
+          vm.showNum += clickNum;
         }
       }
-      vm.clickNum = ''
     },
     insertOp(op) {
       const vm = this;
       // vm.opClass = ""
-      vm.oldNum = vm.showNum;
+      if(vm.result!==""){
+        vm.oldNum = vm.result
+        vm.multipleMode = true
+      }else if(vm.showNum !== "" && vm.showNum !== 0 && vm.showNum !== '0'){
+        vm.oldNum = vm.showNum;
+      }else{
+        return false
+      }
       vm.showNum = "";
       switch (op) {
         case "plus":
@@ -161,6 +142,9 @@ export default {
     },
     equal() {
       const vm = this;
+      if(vm.result!=="" && vm.multipleMode === true){
+        vm.multipleMode = false
+      }
       if (vm.nowOp !== "" && vm.oldNum !== "") {
         switch (vm.nowOp) {
           case "plus":
@@ -178,6 +162,20 @@ export default {
           default:
             break;
         }
+        //答案的檢查
+        if(!isFinite(vm.result)){
+          //可能是非數字的字串 或是 Infinity
+          if(isNaN(vm.result)){
+            // 是非數字的字串
+          }else{
+            // 是Infinity
+            vm.initData()
+            alert("數字不能除以零喔")
+          }
+        }else{
+          //是正常數字
+          vm.result =  vm.result.toString().substr(0,10)
+        }
       }
     },
     initData() {
@@ -189,6 +187,17 @@ export default {
       vm.oldNum = "";
       vm.nowOp = "AC";
       vm.result = "";
+    },
+    floatNum(){
+      const vm = this
+      if(vm.result !==""){
+        //答案不為零則清空並加上小數點
+        vm.initData()
+        vm.result = "0."
+      }else{
+        //一般情況按小數點，需把現在的數字加上小數點
+        vm.showNum += '.'
+      }
     }
   }
 };
