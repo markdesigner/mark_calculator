@@ -18,36 +18,36 @@
       <div class="button-container">
         <!-- <div class="numBtn" @click="insertNum(num)" v-for="
         (num,num_index) in 9" :key="num_index">{{num}}</div>-->
-        <div class="btn double" @click="initData()">AC</div>
-        <div class="btn" @click="reverse()">+/-</div>
-        <div class="btn opBtn" @click="insertOp('divide')">
+        <div id="ac" class="btn double" @click="initData()">AC</div>
+        <div id="reverse" class="btn" @click="reverse()">+/-</div>
+        <div id="divide" class="btn opBtn" @click="insertOp('divide')">
           <i class="fas fa-divide"></i>
         </div>
 
-        <div class="btn" @click="insertNum('7')">7</div>
-        <div class="btn" @click="insertNum('8')">8</div>
-        <div class="btn" @click="insertNum('9')">9</div>
-        <div class="btn opBtn" @click="insertOp('times')">
+        <div id="seven" class="btn" @click="insertNum('7')">7</div>
+        <div id="eight" class="btn" @click="insertNum('8')">8</div>
+        <div id="nine"  class="btn" @click="insertNum('9')">9</div>
+        <div id="times" class="btn opBtn" @click="insertOp('times')">
           <i class="fas fa-times"></i>
         </div>
-
-        <div class="btn" @click="insertNum('4')">4</div>
-        <div class="btn" @click="insertNum('5')">5</div>
-        <div class="btn" @click="insertNum('6')">6</div>
-        <div class="btn opBtn" @click="insertOp('minus')">
+ 
+        <div id="four" class="btn" @click="insertNum('4')">4</div>
+        <div id="five" class="btn" @click="insertNum('5')">5</div>
+        <div id="six" class="btn" @click="insertNum('6')">6</div>
+        <div id="minus" class="btn opBtn" @click="insertOp('minus')">
           <i class="fas fa-minus"></i>
         </div>
 
-        <div class="btn" @click="insertNum('1')">1</div>
-        <div class="btn" @click="insertNum('2')">2</div>
-        <div class="btn" @click="insertNum('3')">3</div>
-        <div class="btn opBtn" @click="insertOp('plus')">
+        <div id="one" class="btn" @click="insertNum('1')">1</div>
+        <div id="two" class="btn" @click="insertNum('2')">2</div>
+        <div id="three" class="btn" @click="insertNum('3')">3</div>
+        <div id="plus" class="btn opBtn" @click="insertOp('plus')">
           <i class="fas fa-plus"></i>
         </div>
 
-        <div class="btn double" @click="insertNum('0')">0</div>
-        <div class="btn" @click="floatNum()">.</div>
-        <div class="btn opBtn" @click="showAnswer = true">
+        <div id="zero" class="btn double" @click="insertNum('0')">0</div>
+        <div id="dot" class="btn" @click="floatNum()">.</div>
+        <div id="equal" class="btn opBtn" @click="showAnswer = true">
           <i class="fas fa-equals"></i>
         </div>
       </div>
@@ -76,7 +76,6 @@ export default {
     };
   },
   mounted(){
-    vuecp = this
   },
   methods: {
     insertNum(clickNum) {
