@@ -46,7 +46,7 @@ describe("home.vue", () => {
     await wrapper.find('.button-container #equal').trigger('click')
     expect(wrapper.find('.showBoard .text').text()).toEqual(no);
   });
-  it("測試計算機 9292 * 3.24 / 63995 =", async () => {
+  it("測試計算機 9292 * 3.24 / 6399 =", async () => {
     const no = "4.70481013";
     const wrapper = shallowMount(home);
     // 9292 * 3.24 = 
