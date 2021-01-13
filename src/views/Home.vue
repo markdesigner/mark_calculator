@@ -5,7 +5,8 @@
       <div class="showBoard">
         <div class="wrap">
           <div class="text" v-if="result!=='' ">{{result}}</div>
-          <div class="text" v-else>{{showNum}}</div>
+          <div class="text" v-if="result==='' && oldNum==='' && showNum !== ''">{{showNum}}</div>
+          <div class="text" v-if="result==='' && oldNum!=='' && showNum === ''">{{oldNum}}</div>
         </div>
         <div class="action-container">
           <transition name="magnify">
@@ -19,7 +20,7 @@
       <div class="button-container">
         <!-- <div class="numBtn" @click="insertNum(num)" v-for="
         (num,num_index) in 9" :key="num_index">{{num}}</div>-->
-        <div class="btn double" @click="insertOp('ac')">AC</div>
+        <div class="btn double" @click="initData()">AC</div>
         <div class="btn" @click="insertOp('reverse')">+/-</div>
         <div class="btn opBtn" @click="insertOp('divide')">
           <i class="fas fa-divide"></i>
@@ -89,15 +90,17 @@ export default {
   //   }
   // },
   watch: {
-    result(oldVal, newVal) {
-      const vm = this
-      if (isFinite(newVal)) {
-        alert("數字不能除以零喔")
-        vm.initData()
-      }
-      console.log(oldVal, "oldVal");
-      console.log(newVal, "newVal");
-    }
+    // result(oldVal, newVal) {
+    //   const vm = this
+    //   if (newVal !== '' && !isFinite(newVal)) {
+    //     alert("數字不能除以零喔")
+    //     setTimeout(() => {
+    //       vm.initData()
+    //     }, 100);
+    //   }
+    //   console.log(oldVal, "oldVal");
+    //   console.log(newVal, "newVal");
+    // }
   },
   mounted(){
     vuecp = this
@@ -107,7 +110,10 @@ export default {
       const vm = this;
       console.log(num);
       vm.clickNum = num;
-      if (vm.showNum === "0") {
+      console.log('113')
+      if (vm.showNum === "0" || vm.showNum === "") {
+         console.log('115',vm.clickNum)
+
         vm.showNum = vm.clickNum;
       } else {
         if (vm.oldNum !== "" && vm.nowOp !== "") {
@@ -122,6 +128,7 @@ export default {
           vm.showNum += vm.clickNum;
         }
       }
+      vm.clickNum = ''
     },
     insertOp(op) {
       const vm = this;
@@ -175,6 +182,7 @@ export default {
     },
     initData() {
       const vm = this;
+      console.log('initData')
       vm.opClass = "";
       vm.clickNum = "";
       vm.showNum = "0";
