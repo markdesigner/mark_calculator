@@ -1,18 +1,16 @@
 <template>
   <div class="home">
-    <!-- <h1 class="index-title">Mark Calculator</h1> -->
     <div id="calculator">
       <div class="showBoard">
         <div class="wrap">
-          <div class="text" v-if="result!==''&& multipleMode === false">{{result}}</div>
-          <div class="text" v-if="(result==='' || multipleMode === true) && showNum !== ''">{{showNum}}</div>
-          <div class="text" v-if="(result==='' || multipleMode === true) && oldNum!=='' && showNum === ''">{{oldNum}}</div>
+          <div class="text" v-if="showAnswer">{{result}}</div>
+          <div class="text" v-else-if="showNum !== ''">{{showNum}}</div>
+          <div class="text" v-else>{{oldNum}}</div>
         </div>
         <div class="action-container">
           <transition name="magnify">
             <div class="action">
               <i v-if="opClass!== ''" :class="`${opClass}`" class="fas"></i>
-              <!-- <div class="text" v-else>{{nowOp}}</div> -->
             </div>
           </transition>
         </div>
@@ -21,7 +19,7 @@
         <!-- <div class="numBtn" @click="insertNum(num)" v-for="
         (num,num_index) in 9" :key="num_index">{{num}}</div>-->
         <div class="btn double" @click="initData()">AC</div>
-        <div class="btn" @click="insertOp('reverse')">+/-</div>
+        <div class="btn" @click="reverse()">+/-</div>
         <div class="btn opBtn" @click="insertOp('divide')">
           <i class="fas fa-divide"></i>
         </div>
@@ -49,7 +47,7 @@
 
         <div class="btn double" @click="insertNum('0')">0</div>
         <div class="btn" @click="floatNum()">.</div>
-        <div class="btn opBtn" @click="equal()">
+        <div class="btn opBtn" @click="showAnswer = true">
           <i class="fas fa-equals"></i>
         </div>
       </div>
@@ -74,7 +72,7 @@ export default {
       oldNum: "",
       nowOp: "",
       opClass: "",
-      multipleMode:false,//累加模式（運算一次後沒有歸零，繼續計算，顯示部分特別處理）
+      showAnswer:false,
     };
   },
   mounted(){
@@ -83,33 +81,33 @@ export default {
   methods: {
     insertNum(clickNum) {
       const vm = this;
-      // vm.clickNum = num;
-      console.log('113')
-      if (vm.showNum === "0" || vm.showNum === "") {
-         console.log('115',clickNum)
-
-        vm.showNum = clickNum;
-      } else {
-        console.log('118')
-        if (vm.oldNum !== "" && vm.nowOp !== "") {
-          //有按下運算子
-          if (vm.showNum === "") {
-            vm.showNum = clickNum;
-          } else {
-            vm.showNum += clickNum;
-          }
+      vm.showAnswer = false
+        if ((vm.showNum === "0" || vm.showNum === "") && vm.nowOp === "") {
+          vm.showNum = clickNum;
         } else {
-          //只按數字
-          vm.showNum += clickNum;
+          if (vm.oldNum !== "" && vm.nowOp !== "") {
+            //有按下運算子
+            if (vm.showNum === "") {
+              vm.showNum = clickNum;
+            } else {
+              vm.showNum += clickNum;
+            }
+            vm.equal()
+          } else {
+            //只按數字
+            if(vm.showNum === "0"){
+               vm.showNum = clickNum;
+            }else{
+              vm.showNum += clickNum;
+            }
+          }
         }
-      }
     },
     insertOp(op) {
       const vm = this;
-      // vm.opClass = ""
+      vm.showAnswer = false
       if(vm.result!==""){
         vm.oldNum = vm.result
-        vm.multipleMode = true
       }else if(vm.showNum !== "" && vm.showNum !== 0 && vm.showNum !== '0'){
         vm.oldNum = vm.showNum;
       }else{
@@ -140,11 +138,20 @@ export default {
           break;
       }
     },
+    reverse(){
+      const vm = this
+      if(vm.showNum !== NaN && vm.showNum !== Infinity && vm.showNum !== "" ){
+        if(parseInt(vm.showNum) >= 0 ){
+          vm.showNum = '-' + vm.showNum.toString() 
+        }else{
+          vm.showNum = vm.showNum.toString().replace(/-/g,'')
+        }
+      }
+      vm.equal()
+
+    },
     equal() {
       const vm = this;
-      if(vm.result!=="" && vm.multipleMode === true){
-        vm.multipleMode = false
-      }
       if (vm.nowOp !== "" && vm.oldNum !== "") {
         switch (vm.nowOp) {
           case "plus":
@@ -187,10 +194,11 @@ export default {
       vm.oldNum = "";
       vm.nowOp = "AC";
       vm.result = "";
+      vm.showAnswer = false;
     },
     floatNum(){
       const vm = this
-      if(vm.result !==""){
+      if(vm.result !=="" && vm.showAnswer === true){
         //答案不為零則清空並加上小數點
         vm.initData()
         vm.result = "0."
@@ -224,7 +232,7 @@ $h1: 30px;
       line-height: 100px;
       border-bottom: rgba(255, 255, 255, 0.6) 1px solid;
       border-bottom-style: dotted;
-      font-size: 44px;
+      font-size: 56px;
       color: $textRed;
       margin-bottom: 10px;
       text-align: right;
