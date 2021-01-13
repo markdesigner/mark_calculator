@@ -180,15 +180,15 @@ export default {
           }
         }else{
           //是正常數字
-          // vm.result =  vm.result.toString().substr(0,10)
-          let splitArr = vm.result.toString().split('.')
-          if(splitArr.length>1){
-            //有小數點
-            vm.result = `${splitArr[0]}.${Math.round(splitArr[1].substr(0,(9 - splitArr[0].length + 1)) /10)}`
-          }else{
-            //沒小數點
-            vm.result = Math.round(vm.result.toString().substr(0,10)/10)
-          }
+          vm.result =  vm.result.toString().substr(0,10)
+          // let splitArr = vm.result.toString().split('.')
+          // if(splitArr.length>1){
+          //   //有小數點
+          //   vm.result = `${splitArr[0]}.${Math.round(splitArr[1].substr(0,(9 - splitArr[0].length + 1)) /10)}`
+          // }else{
+          //   //沒小數點
+          //   vm.result = Math.round(vm.result.toString().substr(0,10)/10)
+          // }
         }
       }
     },
