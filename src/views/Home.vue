@@ -2,7 +2,7 @@
   <div class="home">
     <div id="calculator">
       <div class="showBoard">
-        <div class="wrap">
+        <div class="wrap" id="result">
           <div class="text" v-if="showAnswer">{{result}}</div>
           <div class="text" v-else-if="showNum !== ''">{{showNum}}</div>
           <div class="text" v-else>{{oldNum}}</div>
@@ -24,28 +24,28 @@
           <i class="fas fa-divide"></i>
         </div>
 
-        <div id="seven" class="btn" @click="insertNum('7')">7</div>
-        <div id="eight" class="btn" @click="insertNum('8')">8</div>
-        <div id="nine"  class="btn" @click="insertNum('9')">9</div>
+        <div id="7" class="btn" @click="insertNum('7')">7</div>
+        <div id="8" class="btn" @click="insertNum('8')">8</div>
+        <div id="9"  class="btn" @click="insertNum('9')">9</div>
         <div id="times" class="btn opBtn" @click="insertOp('times')">
           <i class="fas fa-times"></i>
         </div>
  
-        <div id="four" class="btn" @click="insertNum('4')">4</div>
-        <div id="five" class="btn" @click="insertNum('5')">5</div>
-        <div id="six" class="btn" @click="insertNum('6')">6</div>
+        <div id="4" class="btn" @click="insertNum('4')">4</div>
+        <div id="5" class="btn" @click="insertNum('5')">5</div>
+        <div id="6" class="btn" @click="insertNum('6')">6</div>
         <div id="minus" class="btn opBtn" @click="insertOp('minus')">
           <i class="fas fa-minus"></i>
         </div>
 
-        <div id="one" class="btn" @click="insertNum('1')">1</div>
-        <div id="two" class="btn" @click="insertNum('2')">2</div>
-        <div id="three" class="btn" @click="insertNum('3')">3</div>
+        <div id="1" class="btn" @click="insertNum('1')">1</div>
+        <div id="2" class="btn" @click="insertNum('2')">2</div>
+        <div id="3" class="btn" @click="insertNum('3')">3</div>
         <div id="plus" class="btn opBtn" @click="insertOp('plus')">
           <i class="fas fa-plus"></i>
         </div>
 
-        <div id="zero" class="btn double" @click="insertNum('0')">0</div>
+        <div id="0" class="btn double" @click="insertNum('0')">0</div>
         <div id="dot" class="btn" @click="floatNum()">.</div>
         <div id="equal" class="btn opBtn" @click="showAnswer = true">
           <i class="fas fa-equals"></i>
@@ -57,13 +57,9 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
   name: "Home",
-  components: {
-    HelloWorld
-  },
   data() {
     return {
       result: "",
